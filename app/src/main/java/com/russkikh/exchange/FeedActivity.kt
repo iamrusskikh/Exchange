@@ -4,6 +4,8 @@ import android.app.ListActivity
 import android.os.Bundle
 import android.widget.ListView
 import android.widget.Toast
+import android.widget.Toolbar
+import android.view.View
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Response
@@ -11,21 +13,40 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
+import androidx.core.content.ContextCompat
+
 
 class FeedActivity : ListActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_feed)
-        lateinit var listView_details: ListView
-        var arrayList_details:ArrayList<Good> = ArrayList();
+        val toolbar = findViewById<Toolbar>(R.id.toolbar);
+        setActionBar(toolbar)
+        getActionBar()?.setDisplayHomeAsUpEnabled(true);
+        getActionBar()?.setHomeButtonEnabled(true);
+        getActionBar()?.setDisplayShowTitleEnabled(false);
+        toolbar.setTitle("Feed");
+        toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.colorForTitles))
+        val clickListener = View.OnClickListener { view ->
+            when (view.getId()) {
+                R.id.toolbar -> onBackPressed()
+            }
+        }
+        /*toolbar.setNavigationOnClickListener(View.OnClickListener() {
+            fun onClick(){
+                onBackPressed();// возврат на предыдущий activity
+            }
+        })*/
+        var listView_details: ListView
+        var arrayList_details:ArrayList<Good>
         listView_details = findViewById<ListView>(android.R.id.list) as ListView
         HttpClient().get("http://10.97.169.178:8000/good",User.getInstance().token,object: Callback {
             override fun onResponse(call: Call, response: Response) {
                 val responseData = response.body?.string()
                 arrayList_details =parseResponse(responseData)
                 runOnUiThread {
-                    val good_adapter : CustomAdapter
+                    val good_adapter: CustomAdapter
                     good_adapter = CustomAdapter(applicationContext,arrayList_details)
                     listView_details.adapter = good_adapter
                     try { println("Request Successful!!") }
@@ -44,11 +65,14 @@ class FeedActivity : ListActivity() {
             }
         })
     }
+    override fun onNavigateUp(): Boolean {
+        onBackPressed()
+        return true
+    }
 
     fun parseResponse(responseData: String?): ArrayList<Good>
     {
         val goodsJSONArray = JSONArray(responseData.toString())
-        var i:Int = 0
         var arrayList_details:ArrayList<Good> = ArrayList();
         var size:Int = goodsJSONArray.length()
         for (i in 0.. size-1) {

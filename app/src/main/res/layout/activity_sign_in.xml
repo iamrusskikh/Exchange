@@ -36,6 +36,7 @@
         android:layout_marginTop="70dp"
         android:ems="10"
         android:hint="Enter e-mail"
+        android:text="test"
         android:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -48,13 +49,14 @@
         android:layout_marginTop="10dp"
         android:ems="10"
         android:hint="Enter password"
+        android:text="test"
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/emailfield" />
 
     <Button
-        android:id="@+id/InButton"
+        android:id="@+id/feedButton"
         android:layout_width="150dp"
         android:layout_height="48dp"
         android:text="Sign in"
@@ -64,7 +66,7 @@
         app:layout_constraintTop_toBottomOf="@+id/passwordfield" />
 
     <Button
-        android:id="@+id/UpButton"
+        android:id="@+id/newOfferButton"
         android:layout_width="100dp"
         android:layout_height="36dp"
         android:layout_marginTop="16dp"
@@ -83,5 +85,5 @@
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/InButton" />
+        app:layout_constraintTop_toBottomOf="@+id/feedButton" />
 </androidx.constraintlayout.widget.ConstraintLayout>

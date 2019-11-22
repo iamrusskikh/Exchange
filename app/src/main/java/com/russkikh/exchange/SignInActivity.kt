@@ -17,13 +17,13 @@ class SignInActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_in)
-        val InButton = findViewById<Button>(R.id.InButton)
-        val UpButton = findViewById<Button>(R.id.UpButton)
+        val InButton = findViewById<Button>(R.id.feedButton)
+        val UpButton = findViewById<Button>(R.id.newOfferButton)
 
             val clickListener = View.OnClickListener { view ->
                 when (view.getId()) {
-                    R.id.UpButton -> regFun()
-                    R.id.InButton -> if(emailValidation())
+                    R.id.newOfferButton -> regFun()
+                    R.id.feedButton -> if(emailValidation())
                         authFun()
                     else {
 
@@ -50,7 +50,7 @@ class SignInActivity : AppCompatActivity() {
 
     private fun authFun() {
         var user:User = User.getInstance()
-        val intent = Intent(this, FeedActivity::class.java)
+        val intent = Intent(this, BaseActivity::class.java)
         val email = findViewById<EditText>(R.id.emailfield).text.toString()
         val password = findViewById<EditText>(R.id.passwordfield).text.toString()
         val body = JSONObject()
