@@ -1,6 +1,6 @@
 package com.russkikh.exchange
 
-import androidx.appcompat.app.AppCompatActivity
+import android.app.Activity
 import android.os.Bundle
 import android.view.View
 import android.widget.*
@@ -10,7 +10,7 @@ import org.json.JSONObject
 import java.io.IOException
 
 
-class SignUpActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
+class SignUpActivity : Activity(), AdapterView.OnItemSelectedListener {
 
     private var dormitory_id = 0
     override fun onCreate(savedInstanceState: Bundle?) {

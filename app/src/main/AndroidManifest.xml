@@ -35,21 +35,14 @@
         </activity>
         <activity android:name=".SignUpActivity">
             <intent-filter>
-                <action android:name="android.intent.action.ACTION_SIGN_IN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.ACTION_SIGN_UP" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".SignInActivity">
             <intent-filter>
-                <action android:name="android.intent.action.ACTION_SIGN_IN" />
+                <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>

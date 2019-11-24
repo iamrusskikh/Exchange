@@ -1,11 +1,12 @@
 package com.russkikh.exchange
 
-import android.app.ListActivity
+import android.app.Activity
 import android.os.Bundle
 import android.widget.ListView
 import android.widget.Toast
 import android.widget.Toolbar
 import android.view.View
+import androidx.core.content.ContextCompat
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Response
@@ -13,10 +14,9 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
-import androidx.core.content.ContextCompat
 
 
-class FeedActivity : ListActivity() {
+class FeedActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,11 +33,6 @@ class FeedActivity : ListActivity() {
                 R.id.toolbar -> onBackPressed()
             }
         }
-        /*toolbar.setNavigationOnClickListener(View.OnClickListener() {
-            fun onClick(){
-                onBackPressed();// возврат на предыдущий activity
-            }
-        })*/
         var listView_details: ListView
         var arrayList_details:ArrayList<Good>
         listView_details = findViewById<ListView>(android.R.id.list) as ListView

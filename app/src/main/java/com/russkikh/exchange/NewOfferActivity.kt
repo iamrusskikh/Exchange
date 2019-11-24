@@ -1,6 +1,6 @@
 package com.russkikh.exchange
 
-import androidx.appcompat.app.AppCompatActivity
+import android.app.Activity
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -15,7 +15,7 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
 
-class NewOfferActivity : AppCompatActivity() {
+class NewOfferActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +48,7 @@ class NewOfferActivity : AppCompatActivity() {
         body.put("change", strings[2])
         val user = User.getInstance()
         body.put("ownerId", user.id)
-        HttpClient().post_w_auth("http://10.97.169.178:8000/user/signup",user.token, body, object: Callback {
+        HttpClient().post_w_auth("http:/10.97.169.178:8000/good",user.token, body, object: Callback {
             override fun onResponse(call: Call, response: Response) {
                 val responseData = response.body?.string()
                 runOnUiThread {

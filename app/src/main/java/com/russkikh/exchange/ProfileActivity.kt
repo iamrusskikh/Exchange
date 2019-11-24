@@ -1,12 +1,12 @@
 package com.russkikh.exchange
 
-import androidx.appcompat.app.AppCompatActivity
+import android.app.Activity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toolbar
 import androidx.core.content.ContextCompat
 
-class ProfileActivity : AppCompatActivity() {
+class ProfileActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
