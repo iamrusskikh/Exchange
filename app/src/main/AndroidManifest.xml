@@ -11,8 +11,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ProfileActivity"></activity>
-        <activity android:name=".NewOfferActivity"> >
+        <activity android:name=".NewIPActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.ACTION_CHANGE_IP" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".ProfileActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.ACTION_SHOW_PROFILE" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".NewOfferActivity">
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_NEW_OFFER" />
 

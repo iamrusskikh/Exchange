@@ -48,7 +48,8 @@ class NewOfferActivity : Activity() {
         body.put("change", strings[2])
         val user = User.getInstance()
         body.put("ownerId", user.id)
-        HttpClient().post_w_auth("http:/10.97.169.178:8000/good",user.token, body, object: Callback {
+        val httpClient = HttpClient.getInstance()
+        httpClient.post_w_auth("http:/10.97.169.178:8000/good",user.token, body, object: Callback {
             override fun onResponse(call: Call, response: Response) {
                 val responseData = response.body?.string()
                 runOnUiThread {

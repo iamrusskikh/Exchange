@@ -4,6 +4,10 @@ import android.app.Activity
 import android.os.Bundle
 import android.view.View
 import android.widget.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import okhttp3.*
 import org.json.JSONException
 import org.json.JSONObject
@@ -60,14 +64,18 @@ class SignUpActivity : Activity(), AdapterView.OnItemSelectedListener {
         return true
     }
     fun regFun(){
-        val email = findViewById<EditText>(R.id.emailfield).text.toString()
+        val httpClient = HttpClient.getInstance()
+        val email = findViewById<EditText>(R.id.emailfield).text.toString().toLowerCase()
         val password = findViewById<EditText>(R.id.passwordfield).text.toString()
         val body = JSONObject()
         body.put("email", email)
         body.put("password", password)
         body.put("dormitoryId", dormitory_id)
-        HttpClient().post("http://10.97.169.178:8000/user/signup", body, object: Callback {
-            override fun onResponse(call: Call, response: Response) {
+        var data:String = ""
+        GlobalScope.async(Dispatchers.IO) {
+           data = httpClient.POST("/user/signup", body, this@SignUpActivity)
+        }
+            /*override fun onResponse(call: Call, response: Response) {
                 val responseData = response.body?.string()
                 runOnUiThread {
                     try { println("Request Successful!! "+ responseData.toString()) }
@@ -84,7 +92,7 @@ class SignUpActivity : Activity(), AdapterView.OnItemSelectedListener {
                     ).show()
                 }
             }
-        })
+        })*/
     }
 
 

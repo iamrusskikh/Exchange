@@ -6,37 +6,41 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ProgressBar
 import android.widget.Toast
-import okhttp3.*
 import org.json.JSONException
 import org.json.JSONObject
-import java.io.IOException
+import kotlinx.coroutines.*
 
 class SignInActivity : Activity() {
+
+    private var back_pressed: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_in)
-        val InButton = findViewById<Button>(R.id.feedButton)
-        val UpButton = findViewById<Button>(R.id.newOfferButton)
+        val inButton = findViewById<Button>(R.id.feedButton)
+        val upButton = findViewById<Button>(R.id.newOfferButton)
+        val changeIpButton = findViewById<Button>(R.id.ChangeIpButton)
+        val clickListener = View.OnClickListener { view ->
+            when (view.getId()) {
+                R.id.newOfferButton -> regFun()
+                R.id.feedButton -> if (emailValidation())
+                    authFun()
+                else {
 
-            val clickListener = View.OnClickListener { view ->
-                when (view.getId()) {
-                    R.id.newOfferButton -> regFun()
-                    R.id.feedButton -> if(emailValidation())
-                        authFun()
-                    else {
-
-                    }
                 }
+                R.id.ChangeIPButton -> changeIP()
             }
+        }
 
-            InButton.setOnClickListener(clickListener)
-            UpButton.setOnClickListener(clickListener)
+        inButton.setOnClickListener(clickListener)
+        upButton.setOnClickListener(clickListener)
+        changeIpButton.setOnClickListener(clickListener)
     }
 
-    fun emailValidation():Boolean{
-        if(findViewById<EditText>(R.id.emailfield).text.toString().equals("test"))
+    private fun emailValidation(): Boolean {
+        if (findViewById<EditText>(R.id.emailfield).text.toString().equals("test"))
             return true
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(findViewById<EditText>(R.id.emailfield).text.toString()).matches()) {
             Toast.makeText(
@@ -48,49 +52,44 @@ class SignInActivity : Activity() {
         return true
     }
 
+
     private fun authFun() {
-        var user:User = User.getInstance()
-        val intent = Intent(this, BaseActivity::class.java)
-        val email = findViewById<EditText>(R.id.emailfield).text.toString()
+        val progressBar =findViewById<ProgressBar>(R.id.progress_circular)
+        val user: User = User.getInstance()
+        val email = findViewById<EditText>(R.id.emailfield).text.toString().toLowerCase()
         val password = findViewById<EditText>(R.id.passwordfield).text.toString()
         val body = JSONObject()
         body.put("email", email)
         body.put("password", password)
-        HttpClient().post("http://10.97.169.178:8000/user/signin", body, object: Callback {
-            override fun onResponse(call: Call, response: Response) {
-                val responseData = response.body!!.string()
-                runOnUiThread {
-                    try {
-                        println("Request Successful!! "+ responseData)
-                        val userJSON = JSONObject(responseData)
-                        user.id = userJSON.getInt("user_id")
-                        user.email = body.getString("email")
-                        user.token = userJSON.getString("token")
-                        startActivity(intent)
-                    } catch (e: JSONException) {
-                        e.printStackTrace()
-                    }
+        val httpClient = HttpClient.getInstance()
+        progressBar.visibility = View.VISIBLE
+        GlobalScope.launch {
+            val data = async (Dispatchers.IO){ httpClient.POST("/user/signin", body, this@SignInActivity)}.await()
+            delay(10)
+            async {getUpdate(data)}.await()
+            delay(10)
+            user.email = email
+            goToBase()
+        }
+    }
+    private fun changeIP() {
+        val intent = Intent(this, NewIPActivity::class.java)
+        startActivity(intent)
+    }
 
-                }
-            }
-                override fun onFailure(call: Call, e: IOException) {
-                    println("Request Failure. " + e.toString())
-                    runOnUiThread() {
-                        Toast.makeText(
-                            baseContext, "No connection to server",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-            })
+    private fun goToBase(){
+        val intent = Intent(this, BaseActivity::class.java)
+        if (User.getInstance().id != -1)
+            startActivity(intent)
+        runOnUiThread(){
+            findViewById<ProgressBar>(R.id.progress_circular).visibility = View.GONE
+        }
     }
 
     private fun regFun() {
         val intent = Intent(this, SignUpActivity::class.java)
         startActivity(intent)
     }
-
-    private var back_pressed: Long = 0
 
     override fun onBackPressed() {
         if (back_pressed + 2000 > System.currentTimeMillis()) {
@@ -103,5 +102,32 @@ class SignInActivity : Activity() {
                 Toast.LENGTH_SHORT
             ).show()
         back_pressed = System.currentTimeMillis()
+    }
+
+    suspend fun getUpdate(data:String) {
+        var jsonWData = JSONObject()
+        val user = User.getInstance()
+        try {
+            jsonWData = JSONObject(data)
+            user.token = jsonWData.getString("token")
+            user.id = jsonWData.getInt("user_id")
+        } catch (e: JSONException) {
+            if (Regex("java").containsMatchIn(jsonWData.toString())) {
+                runOnUiThread() {
+                    Toast.makeText(
+                        baseContext, "No connection to server",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                val button = findViewById<Button>(R.id.ChangeIpButton)
+                button.isClickable = true
+                button.visibility = View.VISIBLE
+            } else runOnUiThread() {
+                Toast.makeText(
+                    baseContext, jsonWData.toString(),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
     }
 }

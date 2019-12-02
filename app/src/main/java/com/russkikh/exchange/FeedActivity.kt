@@ -21,11 +21,12 @@ class FeedActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_feed)
-        val toolbar = findViewById<Toolbar>(R.id.toolbar);
+        val httpClient = HttpClient.getInstance()
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setActionBar(toolbar)
-        getActionBar()?.setDisplayHomeAsUpEnabled(true);
-        getActionBar()?.setHomeButtonEnabled(true);
-        getActionBar()?.setDisplayShowTitleEnabled(false);
+        getActionBar()?.setDisplayHomeAsUpEnabled(true)
+        getActionBar()?.setHomeButtonEnabled(true)
+        getActionBar()?.setDisplayShowTitleEnabled(false)
         toolbar.setTitle("Feed");
         toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.colorForTitles))
         val clickListener = View.OnClickListener { view ->
@@ -36,7 +37,7 @@ class FeedActivity : Activity() {
         var listView_details: ListView
         var arrayList_details:ArrayList<Good>
         listView_details = findViewById<ListView>(android.R.id.list) as ListView
-        HttpClient().get("http://10.97.169.178:8000/good",User.getInstance().token,object: Callback {
+        httpClient.get("http://10.97.169.178:8000/good",User.getInstance().token,object: Callback {
             override fun onResponse(call: Call, response: Response) {
                 val responseData = response.body?.string()
                 arrayList_details =parseResponse(responseData)
