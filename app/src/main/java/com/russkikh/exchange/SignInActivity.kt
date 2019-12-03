@@ -16,12 +16,19 @@ class SignInActivity : Activity() {
 
     private var back_pressed: Long = 0
 
+    override fun onResume() {
+        super.onResume()
+        findViewById<EditText>(R.id.emailfield).setText("")
+        findViewById<EditText>(R.id.passwordfield).setText("")
+
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_in)
         val inButton = findViewById<Button>(R.id.feedButton)
         val upButton = findViewById<Button>(R.id.newOfferButton)
-        val changeIpButton = findViewById<Button>(R.id.ChangeIpButton)
+        val newIPButton = findViewById<Button>(R.id.NewIPButton)
         val clickListener = View.OnClickListener { view ->
             when (view.getId()) {
                 R.id.newOfferButton -> regFun()
@@ -30,13 +37,13 @@ class SignInActivity : Activity() {
                 else {
 
                 }
-                R.id.ChangeIPButton -> changeIP()
+                R.id.NewIPButton -> changeIP()
             }
         }
 
         inButton.setOnClickListener(clickListener)
         upButton.setOnClickListener(clickListener)
-        changeIpButton.setOnClickListener(clickListener)
+        newIPButton.setOnClickListener(clickListener)
     }
 
     private fun emailValidation(): Boolean {
@@ -112,19 +119,19 @@ class SignInActivity : Activity() {
             user.token = jsonWData.getString("token")
             user.id = jsonWData.getInt("user_id")
         } catch (e: JSONException) {
-            if (Regex("java").containsMatchIn(jsonWData.toString())) {
+            if (Regex("java").containsMatchIn(data)) {
+                val button = findViewById<Button>(R.id.NewIPButton)
                 runOnUiThread() {
                     Toast.makeText(
                         baseContext, "No connection to server",
                         Toast.LENGTH_SHORT
                     ).show()
+                    button.isClickable = true
+                    button.visibility = View.VISIBLE
                 }
-                val button = findViewById<Button>(R.id.ChangeIpButton)
-                button.isClickable = true
-                button.visibility = View.VISIBLE
             } else runOnUiThread() {
                 Toast.makeText(
-                    baseContext, jsonWData.toString(),
+                    baseContext, jsonWData.getString("message"),
                     Toast.LENGTH_SHORT
                 ).show()
             }

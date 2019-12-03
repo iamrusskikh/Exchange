@@ -21,7 +21,7 @@ class NewIPActivity : Activity() {
         getActionBar()?.setDisplayHomeAsUpEnabled(true);
         getActionBar()?.setHomeButtonEnabled(true);
         getActionBar()?.setDisplayShowTitleEnabled(false);
-        toolbar.setTitle("Feed");
+        toolbar.setTitle("Type your IP");
         toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.colorForTitles))
         val clickListener = View.OnClickListener { view ->
             when (view.getId()) {
@@ -30,6 +30,10 @@ class NewIPActivity : Activity() {
             }
         }
         ChangeIPButton.setOnClickListener(clickListener)
+    }
+    override fun onNavigateUp(): Boolean {
+        onBackPressed()
+        return true
     }
 
     private fun changeIP() {

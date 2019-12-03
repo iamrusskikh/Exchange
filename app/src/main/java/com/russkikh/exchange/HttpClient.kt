@@ -7,8 +7,9 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import java.io.IOException
+import java.util.concurrent.TimeUnit
 
- class HttpClient {
+class HttpClient {
 
      companion object {
          private var instance: HttpClient? = null
@@ -22,10 +23,12 @@ import java.io.IOException
      }
 
      var ip = "http://10.97.169.178:8000"
-     val client = OkHttpClient()
+     private val client = OkHttpClient.Builder()
+         .connectTimeout(500, TimeUnit.MILLISECONDS)
+         .callTimeout(500, TimeUnit.MILLISECONDS).build()
      val JSON = "application/json; charset=utf-8".toMediaType()
+
      suspend fun post(url: String, parameters: JSONObject, callback: Callback): Call {
-         println(parameters.toString().toRequestBody())
          val request = Request.Builder()
              .url(url)
              .post(parameters.toString().toRequestBody(JSON))
@@ -37,19 +40,11 @@ import java.io.IOException
          return call
      }
 
-     /*suspend*/ fun post_w_auth(
-         url: String,
-         jwt: String,
-         parameters: JSONObject,
-         callback: Callback
-     ): Call {
-         println(parameters.toString().toRequestBody())
+     /*suspend*/ fun post(url: String, jwt: String, parameters: JSONObject, callback: Callback): Call {
          val request = Request.Builder()
              .url(url)
              .post(parameters.toString().toRequestBody(JSON))
              .build()
-
-
          val call = client.newCall(request)
          call.enqueue(callback)
          return call
