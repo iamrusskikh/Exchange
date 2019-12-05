@@ -20,6 +20,9 @@ class SignInActivity : Activity() {
         super.onResume()
         findViewById<EditText>(R.id.emailfield).setText("")
         findViewById<EditText>(R.id.passwordfield).setText("")
+        val button = findViewById<Button>(R.id.NewIPButton)
+        button.isClickable = false
+        button.visibility = View.GONE
 
     }
 
@@ -71,7 +74,7 @@ class SignInActivity : Activity() {
         val httpClient = HttpClient.getInstance()
         progressBar.visibility = View.VISIBLE
         GlobalScope.launch {
-            val data = async (Dispatchers.IO){ httpClient.POST("/user/signin", body, this@SignInActivity)}.await()
+            val data = async (Dispatchers.IO){ httpClient.POST("/user/signin", body)}.await()
             delay(10)
             async {getUpdate(data)}.await()
             delay(10)

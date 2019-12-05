@@ -4,14 +4,9 @@ import android.app.Activity
 import android.os.Bundle
 import android.view.View
 import android.widget.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import okhttp3.*
+import kotlinx.coroutines.*
 import org.json.JSONException
 import org.json.JSONObject
-import java.io.IOException
 
 
 class SignUpActivity : Activity(), AdapterView.OnItemSelectedListener {
@@ -71,28 +66,43 @@ class SignUpActivity : Activity(), AdapterView.OnItemSelectedListener {
         body.put("email", email)
         body.put("password", password)
         body.put("dormitoryId", dormitory_id)
-        var data:String = ""
-        GlobalScope.async(Dispatchers.IO) {
-           data = httpClient.POST("/user/signup", body, this@SignUpActivity)
+        var response:String = ""
+        GlobalScope.launch {
+            response = async(Dispatchers.IO) {httpClient.POST("/user/signup", body)}.await()
+            delay(10)
+            checkResponse(response)
         }
-            /*override fun onResponse(call: Call, response: Response) {
-                val responseData = response.body?.string()
-                runOnUiThread {
-                    try { println("Request Successful!! "+ responseData.toString()) }
-                    catch (e: JSONException) { e.printStackTrace() }
-                    finish()
-                }
+    }
+
+    suspend fun checkResponse(data: String) {
+        if (data.isEmpty()) {
+            runOnUiThread() {
+                Toast.makeText(
+                    baseContext, "user successfully registered",
+                    Toast.LENGTH_SHORT
+                ).show()
+                finish()
             }
-            override fun onFailure(call: Call, e: IOException) {
-                println("Request Failure. " + e.toString())
-                runOnUiThread {
+        } else {
+            try {
+                val jsonObject = JSONObject(data)
+                runOnUiThread() {
                     Toast.makeText(
-                        baseContext, "No connection to server",
+                        baseContext, jsonObject.getString("message"),
                         Toast.LENGTH_SHORT
                     ).show()
                 }
+
+            } catch (e: JSONException) {
+                if (Regex("java").containsMatchIn(data))
+                    runOnUiThread() {
+                        Toast.makeText(
+                            baseContext, "No connection to server",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
             }
-        })*/
+        }
     }
 
 
