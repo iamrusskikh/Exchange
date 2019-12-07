@@ -1,6 +1,5 @@
 package com.russkikh.exchange
 
-import android.app.Activity
 import kotlinx.coroutines.*
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
@@ -28,6 +27,29 @@ class HttpClient {
         .callTimeout(500, TimeUnit.MILLISECONDS).build()
     val JSON = "application/json; charset=utf-8".toMediaType()
 
+    private suspend fun patch(url: String, jwt: String, parameters: JSONObject, callback: Callback):Call{
+        val request = Request.Builder()
+            .url(url)
+            .patch(parameters.toString().toRequestBody(JSON))
+            .addHeader("Authorization", jwt)
+            .build()
+
+        val call = client.newCall(request)
+        call.enqueue(callback)
+        return call
+    }
+    private suspend fun delete(url: String, jwt: String, parameters: JSONObject, callback: Callback):Call{
+        val request = Request.Builder()
+            .url(url)
+            .delete(parameters.toString().toRequestBody(JSON))
+            .addHeader("Authorization", jwt)
+            .build()
+
+        val call = client.newCall(request)
+        call.enqueue(callback)
+        return call
+    }
+
     private suspend fun post(url: String, parameters: JSONObject, callback: Callback): Call {
         val request = Request.Builder()
             .url(url)
@@ -40,15 +62,11 @@ class HttpClient {
         return call
     }
 
-    private suspend fun post(
-        url: String,
-        jwt: String,
-        parameters: JSONObject,
-        callback: Callback
-    ): Call {
+    private suspend fun post(url: String, jwt: String, parameters: JSONObject, callback: Callback): Call {
         val request = Request.Builder()
             .url(url)
             .post(parameters.toString().toRequestBody(JSON))
+            .addHeader("Authorization", jwt)
             .build()
         val call = client.newCall(request)
         call.enqueue(callback)
@@ -119,6 +137,41 @@ class HttpClient {
                }
            })
        }.await()
+        delay(1000)
+        return responseData
+    }
+
+    suspend fun PATCH(command: String, token: String,body: JSONObject):String{
+        var responseData: String =""
+        GlobalScope.async {
+            patch(ip + command, token, body, object : Callback {
+                override fun onResponse(call: Call, response: Response) {
+                    responseData = response.body!!.string()
+                }
+
+                override fun onFailure(call: Call, e: IOException) {
+                    responseData = e.toString()
+                    println("Request Failure. " + responseData)
+                }
+            })
+        }.await()
+        delay(1000)
+        return responseData
+    }
+    suspend fun DELETE(command: String, token: String,body: JSONObject):String{
+        var responseData: String =""
+        GlobalScope.async {
+            delete(ip + command, token, body, object : Callback {
+                override fun onResponse(call: Call, response: Response) {
+                    responseData = response.body!!.string()
+                }
+
+                override fun onFailure(call: Call, e: IOException) {
+                    responseData = e.toString()
+                    println("Request Failure. " + responseData)
+                }
+            })
+        }.await()
         delay(1000)
         return responseData
     }

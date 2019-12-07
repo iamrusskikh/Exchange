@@ -14,25 +14,24 @@ class BaseActivity : Activity() {
         val feedButton = findViewById<Button>(R.id.feedButton)
         val newOfferButton = findViewById<Button>(R.id.newOfferButton)
         val profileButton = findViewById<Button>(R.id.profileButton)
+        val tempChatButton = findViewById<Button>(R.id.testChatButton)
         val clickListener = View.OnClickListener { view ->
             when (view.getId()) {
-                R.id.newOfferButton -> {
-                    val intent = Intent(this, NewOfferActivity::class.java)
-                    startActivity(intent)
-                }
-                R.id.feedButton ->{
-                    val intent = Intent(this, FeedActivity::class.java)
-                    startActivity(intent)
-                }
-                R.id.profileButton ->{
-                    val intent = Intent(this, ProfileActivity::class.java)
-                    startActivity(intent)
-                }
+                R.id.newOfferButton -> changeActivity(NewOfferActivity())
+                R.id.feedButton -> changeActivity(FeedActivity())
+                R.id.profileButton -> changeActivity(ProfileActivity())
+                R.id.testChatButton ->changeActivity(ChatActivity())
             }
         }
 
         feedButton.setOnClickListener(clickListener)
         profileButton.setOnClickListener(clickListener)
         newOfferButton.setOnClickListener(clickListener)
+    }
+
+    private fun changeActivity(activity: Activity)
+    {
+        val intent = Intent(this, activity::class.java)
+        startActivity(intent)
     }
 }

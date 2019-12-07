@@ -30,4 +30,32 @@
         android:textColor="#000000"
         android:textSize="16dp" />
 
+    <TextView
+        android:id="@+id/ownerId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16dp"
+        android:visibility="gone" />
+    <TextView
+        android:id="@+id/goodId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16dp"
+        android:visibility="gone" />
+    <Button
+        android:id="@+id/editButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Edit offer"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/chatButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="write to owner"
+        android:visibility="gone" />
+
+
+
 </LinearLayout>

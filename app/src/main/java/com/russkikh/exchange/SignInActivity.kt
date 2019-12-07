@@ -4,10 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ProgressBar
-import android.widget.Toast
+import android.widget.*
 import org.json.JSONException
 import org.json.JSONObject
 import kotlinx.coroutines.*
@@ -34,13 +31,13 @@ class SignInActivity : Activity() {
         val newIPButton = findViewById<Button>(R.id.NewIPButton)
         val clickListener = View.OnClickListener { view ->
             when (view.getId()) {
-                R.id.newOfferButton -> regFun()
+                R.id.newOfferButton -> changeActivity(SignUpActivity())
                 R.id.feedButton -> if (emailValidation())
                     authFun()
                 else {
 
                 }
-                R.id.NewIPButton -> changeIP()
+                R.id.NewIPButton -> changeActivity(NewIPActivity())
             }
         }
 
@@ -64,7 +61,7 @@ class SignInActivity : Activity() {
 
 
     private fun authFun() {
-        val progressBar =findViewById<ProgressBar>(R.id.progress_circular)
+        val loadingLayout =findViewById<FrameLayout>(R.id.loading)
         val user: User = User.getInstance()
         val email = findViewById<EditText>(R.id.emailfield).text.toString().toLowerCase()
         val password = findViewById<EditText>(R.id.passwordfield).text.toString()
@@ -72,7 +69,7 @@ class SignInActivity : Activity() {
         body.put("email", email)
         body.put("password", password)
         val httpClient = HttpClient.getInstance()
-        progressBar.visibility = View.VISIBLE
+        loadingLayout.visibility = View.VISIBLE
         GlobalScope.launch {
             val data = async (Dispatchers.IO){ httpClient.POST("/user/signin", body)}.await()
             delay(10)
@@ -82,23 +79,19 @@ class SignInActivity : Activity() {
             goToBase()
         }
     }
-    private fun changeIP() {
-        val intent = Intent(this, NewIPActivity::class.java)
+
+    private fun changeActivity(activity: Activity)
+    {
+        val intent = Intent(this, activity::class.java)
         startActivity(intent)
     }
 
     private fun goToBase(){
-        val intent = Intent(this, BaseActivity::class.java)
-        if (User.getInstance().id != -1)
-            startActivity(intent)
         runOnUiThread(){
-            findViewById<ProgressBar>(R.id.progress_circular).visibility = View.GONE
+            findViewById<FrameLayout>(R.id.loading).visibility = View.GONE
+            if (User.getInstance().id != -1)
+                changeActivity(BaseActivity())
         }
-    }
-
-    private fun regFun() {
-        val intent = Intent(this, SignUpActivity::class.java)
-        startActivity(intent)
     }
 
     override fun onBackPressed() {

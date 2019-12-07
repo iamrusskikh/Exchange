@@ -3,10 +3,7 @@ package com.russkikh.exchange
 import android.app.Activity
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
-import android.widget.Toolbar
+import android.widget.*
 import androidx.core.content.ContextCompat
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
@@ -45,6 +42,7 @@ class NewOfferActivity : Activity() {
     }
 
     fun createOffer() {
+        val loadingLayout =findViewById<FrameLayout>(R.id.loading)
         val strings = makeBetterString()
         val body = JSONObject()
         body.put("name", strings[0])
@@ -53,11 +51,13 @@ class NewOfferActivity : Activity() {
         val user = User.getInstance()
         body.put("ownerId", user.id)
         val httpClient = HttpClient.getInstance()
+        loadingLayout.visibility = View.VISIBLE
         GlobalScope.launch {
             val response = async { httpClient.POST("/good", user.token, body) }.await()
             delay(10)
             if (checkResponse(response))
                 runOnUiThread() {
+                    findViewById<FrameLayout>(R.id.loading).visibility = View.GONE
                     Toast.makeText(
                         baseContext, "new offer successfully registered",
                         Toast.LENGTH_SHORT
@@ -69,7 +69,7 @@ class NewOfferActivity : Activity() {
 
     private fun validateData():Boolean {
         val strings = makeBetterString()
-        val text = Regex("[a-zA-ZА-Яа-яёЁ]{4,}")
+        val text = Regex("[a-zA-ZА-Яа-яёЁ\\s0-9]{4,}")
         if (!text.matches(strings[0]) || !text.matches(strings[1]) || !text.matches(strings[2])) {
             Toast.makeText(
                 baseContext, "All fields should be filled",
@@ -80,7 +80,7 @@ class NewOfferActivity : Activity() {
         return true
     }
 
-    private fun checkResponse(response: String):Boolean {
+    private suspend fun checkResponse(response: String):Boolean {
         if (Regex("java").containsMatchIn(response)) {
             runOnUiThread {
                 Toast.makeText(
@@ -90,16 +90,27 @@ class NewOfferActivity : Activity() {
             }
             return false
         }
+        try{
+            val error =JSONObject(response)
+            runOnUiThread {
+                Toast.makeText(
+                    baseContext, error.getString("error"),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            return false
+        }
+        catch (e:JSONException){ }
         return true
     }
 
     private fun makeBetterString():ArrayList<String> {
         val strings: ArrayList<String> = ArrayList()
-        val name = findViewById<EditText>(R.id.exProduct).toString()
+        val name = findViewById<EditText>(R.id.exProduct).text.toString()
         strings.add(Regex("[\\s]{2,}").replace(name, " "))
-        val description = findViewById<EditText>(R.id.exProDescr).toString()
+        val description = findViewById<EditText>(R.id.exProDescr).text.toString()
         strings.add(Regex("[\\s]{2,}").replace(description, " "))
-        val change = findViewById<EditText>(R.id.reProduct).toString()
+        val change = findViewById<EditText>(R.id.reProduct).text.toString()
         strings.add(Regex("[\\s]{2,}").replace(change, " "))
         return strings
     }

@@ -59,6 +59,7 @@ class SignUpActivity : Activity(), AdapterView.OnItemSelectedListener {
         return true
     }
     fun regFun(){
+        val loadingLayout =findViewById<FrameLayout>(R.id.loading)
         val httpClient = HttpClient.getInstance()
         val email = findViewById<EditText>(R.id.emailfield).text.toString().toLowerCase()
         val password = findViewById<EditText>(R.id.passwordfield).text.toString()
@@ -67,6 +68,7 @@ class SignUpActivity : Activity(), AdapterView.OnItemSelectedListener {
         body.put("password", password)
         body.put("dormitoryId", dormitory_id)
         var response:String = ""
+        loadingLayout.visibility = View.VISIBLE
         GlobalScope.launch {
             response = async(Dispatchers.IO) {httpClient.POST("/user/signup", body)}.await()
             delay(10)
@@ -76,6 +78,7 @@ class SignUpActivity : Activity(), AdapterView.OnItemSelectedListener {
 
     suspend fun checkResponse(data: String) {
         if (data.isEmpty()) {
+            findViewById<FrameLayout>(R.id.loading).visibility = View.GONE
             runOnUiThread() {
                 Toast.makeText(
                     baseContext, "user successfully registered",

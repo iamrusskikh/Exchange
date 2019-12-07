@@ -11,6 +11,20 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".EditActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.ACTION_EDIT" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".ChatActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.ACTION_CHAT" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".NewIPActivity">
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_CHANGE_IP" />
