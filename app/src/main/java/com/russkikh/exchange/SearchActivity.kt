@@ -1,11 +1,10 @@
 package com.russkikh.exchange
 
-import android.app.Activity
 import android.content.Intent
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.*
-import androidx.core.content.ContextCompat
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
@@ -14,50 +13,46 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 
-
-class FeedActivity : Activity() {
+class SearchActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_feed)
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setActionBar(toolbar)
-        getActionBar()?.setDisplayHomeAsUpEnabled(true)
-        getActionBar()?.setHomeButtonEnabled(true)
-        getActionBar()?.setDisplayShowTitleEnabled(false)
-        toolbar.setTitle("Feed");
-        toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.colorForTitles))
+        setContentView(R.layout.activity_search)
+        val searchButton = findViewById<Button>(R.id.search_button)
         val clickListener = View.OnClickListener { view ->
             when (view.getId()) {
-                R.id.toolbar -> onBackPressed()
+                R.id.search_button -> update()
             }
         }
+        searchButton.setOnClickListener(clickListener)
     }
 
+
     fun update(){
-        val loadingLayout =findViewById<FrameLayout>(R.id.loading)
+        //val loadingLayout =findViewById<FrameLayout>(R.id.loading)
         val httpClient = HttpClient.getInstance()
-        loadingLayout.visibility = View.VISIBLE
+        //loadingLayout.visibility = View.VISIBLE
+        val query = findViewById<EditText>(R.id.searchQuery).text.toString()
         var listView_product: ListView
         var arrayList_products: ArrayList<Good> = ArrayList()
         listView_product = findViewById<ListView>(android.R.id.list) as ListView
         GlobalScope.launch {
-            val response = async { httpClient.GET("/good", User.getInstance().token) }.await()
+            val response = async { httpClient.GET("/good/find?q="+query, User.getInstance().token) }.await()
             delay(10)
             if (checkResponse(response))
                 arrayList_products = async { parseResponse(response) }.await()
             delay(10)
-            var good_adapter = ProductAdapter(this@FeedActivity, arrayList_products)
+            var good_adapter = ProductAdapter(this@SearchActivity, arrayList_products)
             delay(1000)
             runOnUiThread {
-                findViewById<FrameLayout>(R.id.loading).visibility = View.GONE
+                //findViewById<FrameLayout>(R.id.loading).visibility = View.GONE
                 listView_product.adapter = good_adapter
             }
 
             listView_product.onItemClickListener = object : AdapterView.OnItemClickListener {
                 override fun onItemClick(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                     val itemValue = listView_product.getItemAtPosition(position) as Good
-                    val intent = Intent(this@FeedActivity, ProductActivity::class.java)
+                    val intent = Intent(this@SearchActivity, ProductActivity::class.java)
                     intent.putExtra("productId",itemValue.goodId)
                     intent.putExtra("productDesc",itemValue.description)
                     intent.putExtra("productName", itemValue.name)
@@ -68,11 +63,6 @@ class FeedActivity : Activity() {
                 }
             }
         }
-    }
-
-    override fun onNavigateUp(): Boolean {
-        onBackPressed()
-        return true
     }
 
     private fun checkResponse(response: String): Boolean {
@@ -110,7 +100,7 @@ class FeedActivity : Activity() {
                 good.urgently = JSONGoodDetail.getBoolean("urgently")
                 arrayList_details.add(good)
             }
-        }catch (e:JSONException)
+        }catch (e: JSONException)
         {
             runOnUiThread {
                 Toast.makeText(

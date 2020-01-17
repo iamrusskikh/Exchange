@@ -23,8 +23,8 @@ class HttpClient {
 
     var ip = "http://10.97.169.178:9000"
     private val client = OkHttpClient.Builder()
-        .connectTimeout(500, TimeUnit.MILLISECONDS)
-        .callTimeout(500, TimeUnit.MILLISECONDS).build()
+        .connectTimeout(1500, TimeUnit.MILLISECONDS)
+        .callTimeout(1500, TimeUnit.MILLISECONDS).build()
     val JSON = "application/json; charset=utf-8".toMediaType()
 
     private suspend fun patch(url: String, jwt: String, parameters: JSONObject, callback: Callback):Call{
@@ -100,7 +100,7 @@ class HttpClient {
                 }
             })
         }.await()
-        delay(1000)
+        delay(3000)
         return responseString
     }
 
@@ -119,7 +119,7 @@ class HttpClient {
                 }
             })
         }.await()
-        delay(1000)
+        delay(3000)
         return responseData
     }
 
@@ -137,7 +137,7 @@ class HttpClient {
                }
            })
        }.await()
-        delay(1000)
+        delay(3000)
         return responseData
     }
 
@@ -155,7 +155,7 @@ class HttpClient {
                 }
             })
         }.await()
-        delay(1000)
+        delay(3000)
         return responseData
     }
     suspend fun DELETE(command: String, token: String,body: JSONObject):String{
@@ -172,7 +172,7 @@ class HttpClient {
                 }
             })
         }.await()
-        delay(1000)
+        delay(3000)
         return responseData
     }
 }

@@ -2,12 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/linearLayout"
+    android:id="@+id/commentLayout"
     android:padding="10dp"
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/goodName"
+        android:id="@+id/ownerName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
@@ -15,20 +15,13 @@
         android:textSize="16dp" />
 
     <TextView
-        android:id="@+id/goodDescription"
+        android:id="@+id/content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:textColor="#000000"
         android:textSize="16dp" />
 
-    <TextView
-        android:id="@+id/change"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:textColor="#000000"
-        android:textSize="16dp" />
 
     <TextView
         android:id="@+id/ownerId"
@@ -41,19 +34,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="16dp"
-        android:visibility="gone" />
-    <Button
-        android:id="@+id/editButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Edit offer"
-        android:visibility="gone" />
-
-    <Button
-        android:id="@+id/chatButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="write to owner"
         android:visibility="gone" />
 
 

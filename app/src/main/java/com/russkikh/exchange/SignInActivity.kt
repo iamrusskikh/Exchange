@@ -112,8 +112,30 @@ class SignInActivity : Activity() {
         val user = User.getInstance()
         try {
             jsonWData = JSONObject(data)
+            val jsonUser = jsonWData.getJSONObject("user")
             user.token = jsonWData.getString("token")
-            user.id = jsonWData.getInt("user_id")
+            user.id = jsonUser.getInt("userId")
+            user.email = jsonUser.getString("email")
+            val goods = jsonUser.getJSONArray("goods")
+            var arrayList_details: ArrayList<Good> = ArrayList();
+            var size: Int = goods.length()
+            if (size!=0) {
+                for (i in 0..size - 1) {
+                    var JSONGoodDetail: JSONObject = goods.getJSONObject(i)
+                    var good: Good = Good();
+                    good.goodId = JSONGoodDetail.getInt("goodId")
+                    good.name = JSONGoodDetail.getString("name")
+                    good.description = JSONGoodDetail.getString("description")
+                    good.ownerId = JSONGoodDetail.getInt("ownerId")
+                    good.change = JSONGoodDetail.getString("change")
+                    good.urgently = JSONGoodDetail.getBoolean("urgently")
+                    arrayList_details.add(good)
+                }
+            }
+            user.goods = arrayList_details
+            user.dormitoryId =jsonUser.getInt("dormitoryId")
+            user.name = jsonUser.getString("name")
+
         } catch (e: JSONException) {
             if (Regex("java").containsMatchIn(data)) {
                 val button = findViewById<Button>(R.id.NewIPButton)

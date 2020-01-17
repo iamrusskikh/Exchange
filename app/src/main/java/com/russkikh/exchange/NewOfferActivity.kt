@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.*
 import androidx.core.content.ContextCompat
+import kotlinx.android.synthetic.main.activity_new_offer.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
@@ -22,7 +23,7 @@ class NewOfferActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_offer)
         val createOfferButton = findViewById<Button>(R.id.createOfferButton)
-        val toolbar = findViewById<Toolbar>(R.id.toolbar);
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setActionBar(toolbar)
         getActionBar()?.setDisplayHomeAsUpEnabled(true);
         getActionBar()?.setHomeButtonEnabled(true);
@@ -50,6 +51,11 @@ class NewOfferActivity : Activity() {
         body.put("change", strings[2])
         val user = User.getInstance()
         body.put("ownerId", user.id)
+        val chip = findViewById<Switch>(R.id.importantSwitch)
+        if(chip.isChecked ==true)
+            body.put("urgently", "true")
+        else body.put("urgently", "false")
+
         val httpClient = HttpClient.getInstance()
         loadingLayout.visibility = View.VISIBLE
         GlobalScope.launch {
@@ -70,14 +76,16 @@ class NewOfferActivity : Activity() {
     private fun validateData():Boolean {
         val strings = makeBetterString()
         val text = Regex("[a-zA-ZА-Яа-яёЁ\\s0-9]{4,}")
-        if (!text.matches(strings[0]) || !text.matches(strings[1]) || !text.matches(strings[2])) {
+        if (text.matches(strings[0]) && text.matches(strings[1]) && (text.matches(strings[2])||strings[2]=="")) {
+            return true
+        }
+        else {
             Toast.makeText(
                 baseContext, "All fields should be filled",
                 Toast.LENGTH_SHORT
             ).show()
             return false
         }
-        return true
     }
 
     private suspend fun checkResponse(response: String):Boolean {
@@ -88,6 +96,8 @@ class NewOfferActivity : Activity() {
                     Toast.LENGTH_SHORT
                 ).show()
             }
+            val loadingLayout =findViewById<FrameLayout>(R.id.loading)
+            loadingLayout.visibility = View.VISIBLE
             return false
         }
         try{
@@ -98,6 +108,8 @@ class NewOfferActivity : Activity() {
                     Toast.LENGTH_SHORT
                 ).show()
             }
+            val loadingLayout =findViewById<FrameLayout>(R.id.loading)
+            loadingLayout.visibility = View.VISIBLE
             return false
         }
         catch (e:JSONException){ }

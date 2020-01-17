@@ -63,10 +63,12 @@ class SignUpActivity : Activity(), AdapterView.OnItemSelectedListener {
         val httpClient = HttpClient.getInstance()
         val email = findViewById<EditText>(R.id.emailfield).text.toString().toLowerCase()
         val password = findViewById<EditText>(R.id.passwordfield).text.toString()
+        val name = findViewById<EditText>(R.id.namefield).text.toString()
         val body = JSONObject()
         body.put("email", email)
         body.put("password", password)
         body.put("dormitoryId", dormitory_id)
+        body.put("name", name)
         var response:String = ""
         loadingLayout.visibility = View.VISIBLE
         GlobalScope.launch {
