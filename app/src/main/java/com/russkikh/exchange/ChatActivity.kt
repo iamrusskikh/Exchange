@@ -14,10 +14,8 @@ import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-
-
-
-
+import android.widget.Button
+import android.widget.Toast
 
 
 class ChatActivity : Activity() {
@@ -34,6 +32,16 @@ class ChatActivity : Activity() {
         toolbar.setTitle("Chat");
         toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.colorForTitles))
 
+        val mSocket = (application as MySocketApp).getSocketInstance()
+
+        if (mSocket.connected()) {
+            Toast.makeText(this, "COnnected", Toast.LENGTH_LONG).show()
+        }
+        val button = findViewById<Button>(R.id.button)
+
+        button.setOnClickListener {
+            mSocket.emit("chat message", "Hi there this is connected!")
+        }
     }
 
     override fun onNavigateUp(): Boolean {

@@ -15,8 +15,9 @@ import org.json.JSONException
 import org.json.JSONObject
 
 class ProductActivity : Activity() {
-
+    var httpClient = HttpClient.getInstance()
     var good:Good = Good()
+    var user:User = User.getInstance()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_product)
@@ -55,7 +56,6 @@ class ProductActivity : Activity() {
             changeDescription = "Ready for your offer"
         findViewById<TextView>(R.id.change).text = changeDescription
         findViewById<TextView>(R.id.goodDescription).text = good.description
-        update()
     }
 
     override fun onResume() {
@@ -68,7 +68,6 @@ class ProductActivity : Activity() {
         val body:JSONObject = JSONObject()
         val content = findViewById<EditText>(R.id.comment).text.toString()
         body.put("content", content)
-        val user = User.getInstance()
         body.put("ownerId", user.id)
         body.put ("goodId", good.goodId)
         val httpClient = HttpClient.getInstance()
@@ -81,24 +80,22 @@ class ProductActivity : Activity() {
                         baseContext, "new comment successfully registered",
                         Toast.LENGTH_SHORT
                     ).show()
-                    update()
                 }
         }
     }
 
     private fun update() {
-        val httpClient = HttpClient.getInstance()
         var listView_product: ListView
         var arrayList_products: ArrayList<Comment> = ArrayList()
         listView_product = findViewById<ListView>(android.R.id.list) as ListView
         GlobalScope.launch {
-            val response = async { httpClient.GET("/comment?goodId="+good.goodId, User.getInstance().token) }.await()
+            val response = async { httpClient.GET("/comment?goodId="+good.goodId, user.token) }.await()
             delay(10)
             if (checkResponse(response))
                 arrayList_products = async { parseResponse(response) }.await()
             delay(10)
             var comments_adapter = CommentsAdapter(this@ProductActivity, arrayList_products)
-            delay(1000)
+            delay(10)
             runOnUiThread {
                 listView_product.adapter = comments_adapter
             }

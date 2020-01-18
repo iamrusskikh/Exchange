@@ -2,6 +2,7 @@ package com.russkikh.exchange
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -50,6 +51,8 @@ class ProductAdapter(context: Context, arrayListDetails:ArrayList<Good>) : BaseA
         productItemAdapter.goodName.text = arrayListDetails.get(position).name
         productItemAdapter.goodDescription.text = arrayListDetails.get(position).description
         productItemAdapter.change.text = arrayListDetails.get(position).change
+        if(arrayListDetails.get(position).urgently)
+            view!!.setBackgroundColor(Color.rgb(207,255,220))
         return view
     }
 }

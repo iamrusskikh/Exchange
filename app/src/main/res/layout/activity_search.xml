@@ -5,17 +5,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SearchActivity">
-        <EditText
+
+    <android.widget.Toolbar
+        android:id="@+id/toolbar"
+        style="@style/Toolbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <EditText
             android:id="@+id/searchQuery"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
             android:hint="Type your search query "
             android:inputType="textShortMessage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="25dp"
-            android:layout_marginTop="45dp"
+            android:layout_marginTop="15dp"
             android:layout_marginEnd="70dp"/>
 
     <ListView
@@ -35,12 +42,12 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="45dp"
+        android:layout_marginTop="15dp"
         android:background="@drawable/ic_search"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/searchQuery"
         android:outlineProvider="none"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
     <View
         android:id="@+id/menu"

@@ -1,7 +1,7 @@
 package com.russkikh.exchange
 
+import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.*
@@ -13,25 +13,37 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 
-class SearchActivity : AppCompatActivity() {
+class SearchActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
         val searchButton = findViewById<Button>(R.id.search_button)
+        val feedButton = findViewById<Button>(R.id.feed_vector)
+        val newOfferButton = findViewById<Button>(R.id.new_offer_vector)
+        val profileButton = findViewById<Button>(R.id.profile_vector)
         val clickListener = View.OnClickListener { view ->
             when (view.getId()) {
                 R.id.search_button -> update()
+                R.id.feed_vector -> changeActivity(FeedActivity())
+                R.id.new_offer_vector -> changeActivity(NewOfferActivity())
+                R.id.profile_vector ->changeActivity(ProfileActivity())
             }
         }
         searchButton.setOnClickListener(clickListener)
+        feedButton.setOnClickListener(clickListener)
+        profileButton.setOnClickListener(clickListener)
+        newOfferButton.setOnClickListener(clickListener)
     }
 
+    private fun changeActivity(activity: Activity)
+    {
+        val intent = Intent(this, activity::class.java)
+        startActivity(intent)
+    }
 
     fun update(){
-        //val loadingLayout =findViewById<FrameLayout>(R.id.loading)
         val httpClient = HttpClient.getInstance()
-        //loadingLayout.visibility = View.VISIBLE
         val query = findViewById<EditText>(R.id.searchQuery).text.toString()
         var listView_product: ListView
         var arrayList_products: ArrayList<Good> = ArrayList()
@@ -45,7 +57,6 @@ class SearchActivity : AppCompatActivity() {
             var good_adapter = ProductAdapter(this@SearchActivity, arrayList_products)
             delay(1000)
             runOnUiThread {
-                //findViewById<FrameLayout>(R.id.loading).visibility = View.GONE
                 listView_product.adapter = good_adapter
             }
 

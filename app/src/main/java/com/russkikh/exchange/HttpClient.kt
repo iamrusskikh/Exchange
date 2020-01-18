@@ -7,6 +7,9 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import java.io.IOException
 import java.util.concurrent.TimeUnit
+import android.graphics.BitmapFactory
+import android.graphics.Bitmap
+
 
 class HttpClient {
 
@@ -21,10 +24,9 @@ class HttpClient {
         }
     }
 
-    var ip = "http://10.97.169.178:9000"
+    var ip = "http://10.97.136.106:9000"
     private val client = OkHttpClient.Builder()
-        .connectTimeout(1500, TimeUnit.MILLISECONDS)
-        .callTimeout(1500, TimeUnit.MILLISECONDS).build()
+        .callTimeout(3000, TimeUnit.MILLISECONDS).build()
     val JSON = "application/json; charset=utf-8".toMediaType()
 
     private suspend fun patch(url: String, jwt: String, parameters: JSONObject, callback: Callback):Call{

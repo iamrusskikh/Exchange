@@ -90,7 +90,7 @@ class SignInActivity : Activity() {
         runOnUiThread(){
             findViewById<FrameLayout>(R.id.loading).visibility = View.GONE
             if (User.getInstance().id != -1)
-                changeActivity(BaseActivity())
+                changeActivity(FeedActivity())
         }
     }
 
@@ -127,7 +127,8 @@ class SignInActivity : Activity() {
                     good.name = JSONGoodDetail.getString("name")
                     good.description = JSONGoodDetail.getString("description")
                     good.ownerId = JSONGoodDetail.getInt("ownerId")
-                    good.change = JSONGoodDetail.getString("change")
+                    if(JSONGoodDetail.has("change"))
+                        good.change = JSONGoodDetail.getString("change")
                     good.urgently = JSONGoodDetail.getBoolean("urgently")
                     arrayList_details.add(good)
                 }

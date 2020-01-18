@@ -20,18 +20,29 @@ class FeedActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_feed)
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setActionBar(toolbar)
-        getActionBar()?.setDisplayHomeAsUpEnabled(true)
-        getActionBar()?.setHomeButtonEnabled(true)
-        getActionBar()?.setDisplayShowTitleEnabled(false)
-        toolbar.setTitle("Feed");
-        toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.colorForTitles))
+        val feedButton = findViewById<Button>(R.id.feed_vector)
+        val newOfferButton = findViewById<Button>(R.id.new_offer_vector)
+        val profileButton = findViewById<Button>(R.id.profile_vector)
+        val searchButton = findViewById<Button>(R.id.search_vector)
         val clickListener = View.OnClickListener { view ->
             when (view.getId()) {
-                R.id.toolbar -> onBackPressed()
+                R.id.feed_vector -> update()
+                R.id.search_vector ->changeActivity(SearchActivity())
+                R.id.new_offer_vector -> changeActivity(NewOfferActivity())
+                R.id.profile_vector ->changeActivity(ProfileActivity())
             }
         }
+
+        feedButton.setOnClickListener(clickListener)
+        profileButton.setOnClickListener(clickListener)
+        newOfferButton.setOnClickListener(clickListener)
+        searchButton.setOnClickListener(clickListener)
+    }
+
+    private fun changeActivity(activity: Activity)
+    {
+        val intent = Intent(this, activity::class.java)
+        startActivity(intent)
     }
 
     fun update(){
@@ -53,7 +64,6 @@ class FeedActivity : Activity() {
                 findViewById<FrameLayout>(R.id.loading).visibility = View.GONE
                 listView_product.adapter = good_adapter
             }
-
             listView_product.onItemClickListener = object : AdapterView.OnItemClickListener {
                 override fun onItemClick(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                     val itemValue = listView_product.getItemAtPosition(position) as Good
